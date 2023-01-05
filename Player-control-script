@@ -1,0 +1,58 @@
+local player = game.Players.LocalPlayer
+local char = player.Character or player.CharacterAdded:Wait()
+local humanoid = char:WaitForChild("Humanoid")
+local rootPart = char:WaitForChild("HumanoidRootPart")
+local sword = char:WaitForChild("Sword")
+
+local userInputService = game:GetService("UserInputService")
+local runAnim = Instance.new("Animation")
+runAnim.AnimationId = "rbxassetid://50088857"
+local runAnimTrack = humanoid:LoadAnimation(runAnim)
+
+local attackAnim = Instance.new("Animation")
+attackAnim.AnimationId = "rbxassetid://499964034"
+local attackAnimTrack = humanoid:LoadAnimation(attackAnim)
+
+local speed = 16
+local jumping = false
+local attackCooldown = false
+
+userInputService.InputBegan:Connect(function(input, gameProcessed)
+	if input.KeyCode == Enum.KeyCode.W then
+		humanoid.Jump = true
+		jumping = true
+	elseif input.KeyCode == Enum.KeyCode.A then
+		runAnimTrack:Play(0.1, 1, 0.1)
+		rootPart.CFrame = rootPart.CFrame * CFrame.new(-speed * 0.03, 0, 0)
+	elseif input.KeyCode == Enum.KeyCode.S then
+		runAnimTrack:Play(0.1, 1, 0.1)
+		rootPart.CFrame = rootPart.CFrame * CFrame.new(speed * 0.03, 0, 0)
+	elseif input.KeyCode == Enum.KeyCode.D then
+		runAnimTrack:Play(0.1, 1, 0.1)
+		rootPart.CFrame = rootPart.CFrame * CFrame.new(0, 0, -speed * 0.03)
+	elseif input.KeyCode == Enum.KeyCode.Space then
+		if not attackCooldown then
+			attackAnimTrack:Play(0.1, 1, 0.1)
+			attackCooldown = true
+			wait(0.5)
+			attackCooldown = false
+		end
+	end
+end)
+
+userInputService.InputEnded:Connect(function(input, gameProcessed)
+	if input.KeyCode == Enum.KeyCode.W then
+		jumping = false
+	else
+		runAnimTrack:Stop()
+	end
+end)
+
+userInputService.MouseMoved:Connect(function(input, gameProcessed)
+	local delta = input.Delta
+	local camera = game.Workspace.CurrentCamera
+	local pitch = camera.FieldOfView / 2
+	local yaw = pitch * (delta.X / camera.ViewportSize.X)
+	local pitch = pitch * (-delta.Y / camera.ViewportSize.Y)
+	local cframe = camera.CFrame * CFrame.Angles(math.rad(pitch), math.rad(yaw), 0)
+	rootPart.CFrame = rootPart.CFrame * CFrame
