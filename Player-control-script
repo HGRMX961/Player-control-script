@@ -55,4 +55,14 @@ userInputService.MouseMoved:Connect(function(input, gameProcessed)
 	local yaw = pitch * (delta.X / camera.ViewportSize.X)
 	local pitch = pitch * (-delta.Y / camera.ViewportSize.Y)
 	local cframe = camera.CFrame * CFrame.Angles(math.rad(pitch), math.rad(yaw), 0)
-	rootPart.CFrame = rootPart.CFrame * CFrame
+	rootPart.CFrame = rootPart.CFrame * CFrame.new(0, 0, 0) * cframe
+end)
+
+while true do
+	if jumping then
+		rootPart.CFrame = rootPart.CFrame * CFrame.new(0, 0.1, 0)
+	else
+		rootPart.CFrame = rootPart.CFrame * CFrame.new(0, -0.1, 0)
+	end
+	wait(0.03)
+end
